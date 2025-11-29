@@ -1,0 +1,70 @@
+name: Autograding Tests
+'on':
+- push
+- repository_dispatch
+permissions:
+  checks: write
+  actions: read
+  contents: read
+jobs:
+  run-autograding-tests:
+    runs-on: ubuntu-latest
+    if: github.actor != 'github-classroom[bot]'
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    - name: test_line
+      id: test_line
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test_line
+        setup-command: ''
+        command: make test_line
+        timeout: 10
+        max-score: 20
+    - name: test_point
+      id: test_point
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test_point
+        setup-command: ''
+        command: make test_point
+        timeout: 10
+        max-score: 20
+    - name: test_triangle
+      id: test_triangle
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test_triangle
+        setup-command: ''
+        command: make test_triangle
+        timeout: 10
+        max-score: 20
+    - name: test_quadrilateral
+      id: test_quadrilateral
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test_quadrilateral
+        setup-command: ''
+        command: make test_quadrilateral
+        timeout: 10
+        max-score: 20
+    - name: test_group
+      id: test_group
+      uses: classroom-resources/autograding-command-grader@v1
+      with:
+        test-name: test_group
+        setup-command: ''
+        command: make test_group
+        timeout: 10
+        max-score: 20
+    - name: Autograding Reporter
+      uses: classroom-resources/autograding-grading-reporter@v1
+      env:
+        TEST_LINE_RESULTS: "${{steps.test_line.outputs.result}}"
+        TEST_POINT_RESULTS: "${{steps.test_point.outputs.result}}"
+        TEST_TRIANGLE_RESULTS: "${{steps.test_triangle.outputs.result}}"
+        TEST_QUADRILATERAL_RESULTS: "${{steps.test_quadrilateral.outputs.result}}"
+        TEST_GROUP_RESULTS: "${{steps.test_group.outputs.result}}"
+      with:
+        runners: test_line,test_point,test_triangle,test_quadrilateral,test_group
